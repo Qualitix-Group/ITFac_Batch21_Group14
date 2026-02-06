@@ -231,6 +231,52 @@ public class PlantsPage extends PageObject {
         }
     }
 
+// =====================================================
+// 🔹 EMPTY PLANT LIST CHECK (TC_UI_USER_PLANT_013)
+// =====================================================
+
+    @FindBy(xpath = "//table//tbody//td[contains(normalize-space(),'No plants found')]")
+    private WebElementFacade emptyPlantsMessage;
+
+    /**
+     * Verify empty plant list message is displayed
+     */
+    public boolean isEmptyPlantListMessageDisplayed() {
+        try {
+            return emptyPlantsMessage.waitUntilVisible().isDisplayed();
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    /**
+     * Get empty plant list message text
+     */
+    public String getEmptyPlantListMessage() {
+        try {
+            return emptyPlantsMessage.getText().trim();
+        } catch (Exception e) {
+            return "";
+        }
+    }
+
+    /**
+     * Verify plant list has NO real plant data rows
+     * (ignores the 'No plants found' placeholder row)
+     */
+    public boolean isPlantTableEmpty() {
+        try {
+            return plantRows.stream()
+                    .noneMatch(row ->
+                            !row.getText().trim().equalsIgnoreCase("No plants found")
+                                    && !row.getText().trim().isEmpty()
+                    );
+        } catch (Exception e) {
+            return true;
+        }
+    }
+
+
 
 
 }

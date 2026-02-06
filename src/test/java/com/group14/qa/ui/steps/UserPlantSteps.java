@@ -15,6 +15,7 @@ public class UserPlantSteps {
     PlantsPage plantsPage;
 
     @When("I am on the Plants list page")
+    @When("I navigate to the Plant List page")
     public void i_am_on_the_plants_list_page() {
         plantsPage.openPlantsTab();
     }
@@ -40,11 +41,34 @@ public class UserPlantSteps {
                 .isTrue();
     }
 
+    @Then("I should see no plants in the plant list")
+    public void i_should_see_no_plants_in_the_plant_list() {
+        assertThat(plantsPage.isPlantTableEmpty())
+                .as("Plant list table should be empty")
+                .isTrue();
+    }
+
     @Then("I should see pagination controls")
     public void i_should_see_pagination_controls() {
         assertThat(plantsPage.isPaginationVisible())
                 .as("Pagination controls should be visible")
                 .isTrue();
+    }
+
+    @Then("I should see the empty plant list message")
+    public void i_should_see_the_empty_plant_list_message() {
+
+        assertThat(plantsPage.isPlantTableEmpty())
+                .as("Plant list should contain no plant records")
+                .isTrue();
+
+        assertThat(plantsPage.isEmptyPlantListMessageDisplayed())
+                .as("Empty plant list message should be visible")
+                .isTrue();
+
+        assertThat(plantsPage.getEmptyPlantListMessage())
+                .as("Empty plant list message text mismatch")
+                .isEqualTo("No plants found");
     }
 
 }

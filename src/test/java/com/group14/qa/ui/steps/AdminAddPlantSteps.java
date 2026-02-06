@@ -19,7 +19,7 @@ public class AdminAddPlantSteps {
     PlantsPage plantsPage;
 
     // Dynamic names prevent duplicate failures
-    private String plantName = "JakFruityPlant";
+    private String plantName = "Pumpkin2Plant";
     private String longPlantName = "VeryLongPlantNameExceedingLimit123";
 
     @Given("I am logged in as admin and on Plants page")

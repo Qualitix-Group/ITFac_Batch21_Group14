@@ -22,3 +22,7 @@ Feature: User - Low stock indicator
     When I am on the Plants list page
     Then I should see pagination controls
 
+  @Smoke @User @Plants
+  Scenario: TC_UI_USER_PLANT_013 Verify empty plant list message
+    When I am on the Plants list page
+    Then I should see the empty plant list message
