@@ -7,7 +7,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 
-import static com.group14.qa.api.utils.AuthConfig.ADMIN_TOKEN;
+import static com.group14.qa.api.utils.AuthConfig.TOKEN;
 
 @RunWith(SerenityRunner.class)
 public class AdminPlantInvalidCategoryTest {
@@ -22,7 +22,7 @@ public class AdminPlantInvalidCategoryTest {
         int[] invalidCategoryIds = {0, -1, 999999999};
 
         for (int categoryId : invalidCategoryIds) {
-            adminPlantNegativeSteps.createPlantWithInvalidCategoryId(categoryId,  ADMIN_TOKEN);
+            adminPlantNegativeSteps.createPlantWithInvalidCategoryId(categoryId,  TOKEN);
             adminPlantNegativeSteps.verifyClientError();
             adminPlantNegativeSteps.verifyNoPlantCreated();
         }

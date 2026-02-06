@@ -7,7 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static com.group14.qa.api.utils.AuthConfig.ADMIN_TOKEN;
+import static com.group14.qa.api.utils.AuthConfig.TOKEN;
 
 @RunWith(SerenityRunner.class)
 public class AdminPlantUpdateTest {
@@ -29,7 +29,7 @@ public class AdminPlantUpdateTest {
             updatedName = updatedName.substring(0, 25);
         }
 
-        plantId = steps.createPlantForUpdate(ADMIN_TOKEN, subCategoryId);
+        plantId = steps.createPlantForUpdate(TOKEN, subCategoryId);
     }
 
     @Test
@@ -37,7 +37,7 @@ public class AdminPlantUpdateTest {
 
         steps.updatePlant(
                 plantId,
-                ADMIN_TOKEN,
+                TOKEN,
                 updatedName,
                 updatedPrice,
                 updatedQuantity

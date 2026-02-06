@@ -7,7 +7,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 
-import static com.group14.qa.api.utils.AuthConfig.ADMIN_TOKEN;
+import static com.group14.qa.api.utils.AuthConfig.TOKEN;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -25,7 +25,7 @@ public class AdminPlantDeletedCategoryTest {
 
         // WHEN
         adminPlantDeletedCategorySteps.createPlantWithDeletedCategoryId(
-                deletedCategoryId,  ADMIN_TOKEN
+                deletedCategoryId,  TOKEN
         );
 
         // THEN

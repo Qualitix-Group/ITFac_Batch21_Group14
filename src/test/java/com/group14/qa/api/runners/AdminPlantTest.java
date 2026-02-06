@@ -6,7 +6,7 @@ import net.serenitybdd.junit.runners.SerenityRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static com.group14.qa.api.utils.AuthConfig.ADMIN_TOKEN;
+import static com.group14.qa.api.utils.AuthConfig.TOKEN;
 
 @RunWith(SerenityRunner.class)
 public class AdminPlantTest {
@@ -22,7 +22,7 @@ public class AdminPlantTest {
 
         String plantName = "SunFlower_" + System.currentTimeMillis();
 
-        adminPlantSteps.createPlant(validSubCategoryId, ADMIN_TOKEN, plantName);
+        adminPlantSteps.createPlant(validSubCategoryId, TOKEN, plantName);
         adminPlantSteps.verifyPlantCreated(plantName, validSubCategoryId);
     }
 
@@ -32,11 +32,11 @@ public class AdminPlantTest {
         String plantName = "Rose_" + System.currentTimeMillis();
 
         // Precondition
-        adminPlantSteps.createPlant(validSubCategoryId, ADMIN_TOKEN, plantName);
+        adminPlantSteps.createPlant(validSubCategoryId, TOKEN, plantName);
         adminPlantSteps.verifyPlantCreated(plantName, validSubCategoryId);
 
         // Action
-        adminPlantSteps.createPlant(validSubCategoryId, ADMIN_TOKEN, plantName);
+        adminPlantSteps.createPlant(validSubCategoryId, TOKEN, plantName);
 
         // Assertion
         adminPlantSteps.verifyDuplicatePlantError();
