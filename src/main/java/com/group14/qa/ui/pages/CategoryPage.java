@@ -1,7 +1,6 @@
 package com.group14.qa.ui.pages;
 
 import net.serenitybdd.core.pages.PageObject;
-import net.serenitybdd.core.pages.WebElementFacade;
 import org.openqa.selenium.By;
 
 public class CategoryPage extends PageObject {
@@ -12,8 +11,7 @@ public class CategoryPage extends PageObject {
     private final By categoryTable =
             By.cssSelector("table");
 
-    private final By pagination =
-            By.cssSelector(".pagination");
+
 
     public void openCategoriesPage() {
 
@@ -36,7 +34,5 @@ public class CategoryPage extends PageObject {
         return findAll(categoryTable).size() > 0;
     }
 
-    public boolean isPaginationDisplayed() {
-        return findAll(pagination).size() > 0;
-    }
+
 }
