@@ -1,7 +1,7 @@
 package com.group14.qa.ui.steps;
 
 import com.group14.qa.ui.pages.LoginPage;
-import com.group14.qa.ui.pages.PlantsPage;
+import com.group14.qa.ui.pages.PlantsAddEditPage;
 import com.group14.qa.testdata.TestUsers;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;
@@ -16,10 +16,10 @@ public class AdminAddPlantSteps {
     LoginPage loginPage;
 
     @Steps
-    PlantsPage plantsPage;
+    PlantsAddEditPage plantsPage;
 
     // Dynamic names prevent duplicate failures
-    private String plantName = "Papaya123Plant";
+    private String plantName = "Kapuru1Plant";
     private String longPlantName = "VeryLongPlantNameExceedingLimit123";
 
     @Given("I am logged in as admin and on Plants page")

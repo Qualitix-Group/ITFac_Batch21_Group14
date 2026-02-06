@@ -4,12 +4,11 @@ import net.serenitybdd.core.pages.PageObject;
 import net.serenitybdd.core.annotations.findby.FindBy;
 import net.serenitybdd.core.pages.WebElementFacade;
 import org.openqa.selenium.support.ui.Select;
-import java.time.Duration;
 import org.openqa.selenium.By;
 
 import java.util.List;
 
-public class PlantsPage extends PageObject {
+public class PlantsAddEditPage extends PageObject {
 
     // ---------- Navigation ----------
     @FindBy(linkText = "Plants")

@@ -1,7 +1,7 @@
 package com.group14.qa.ui.steps;
 
 import com.group14.qa.ui.pages.LoginPage;
-import com.group14.qa.ui.pages.PlantsPage;
+import com.group14.qa.ui.pages.PlantsAddEditPage;
 import com.group14.qa.testdata.TestUsers;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;
@@ -16,10 +16,10 @@ public class AdminEditPlantSteps {
     LoginPage loginPage;
 
     @Steps
-    PlantsPage plantsPage;
+    PlantsAddEditPage plantsPage;
 
-    private String originalPlantName = "Papaya12Plant";   // from your table HTML
-    private String updatedPlantName = "Guava133Plant";
+    private String originalPlantName = "SunFlower";   // from your table HTML
+    private String updatedPlantName = "Kapuru1Plant";
 
     @Given("I am logged in as admin and on plant list page")
     public void i_am_logged_in_as_admin_and_on_plant_list_page() {

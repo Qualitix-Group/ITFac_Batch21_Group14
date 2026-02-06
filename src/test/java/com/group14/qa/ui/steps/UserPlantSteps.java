@@ -1,18 +1,15 @@
 package com.group14.qa.ui.steps;
 
-import com.group14.qa.ui.pages.PlantsPage;
+import com.group14.qa.ui.pages.PlantsAddEditPage;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import net.serenitybdd.annotations.Steps;
-import net.serenitybdd.core.pages.PageObject;
-import net.serenitybdd.annotations.ManagedPages;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class UserPlantSteps {
 
 
-    PlantsPage plantsPage;
+    PlantsAddEditPage plantsPage;
 
     @When("I am on the Plants list page")
     @When("I navigate to the Plant List page")
