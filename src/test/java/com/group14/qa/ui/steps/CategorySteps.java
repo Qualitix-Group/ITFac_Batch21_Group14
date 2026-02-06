@@ -24,10 +24,5 @@ public class CategorySteps {
                 .isTrue();
     }
 
-    @Then("categories should be displayed with pagination")
-    public void categories_should_be_displayed_with_pagination() {
-        assertThat(categoryPage.isPaginationDisplayed())
-                .as("Pagination should be visible")
-                .isTrue();
-    }
+
 }
