@@ -255,4 +255,6 @@ public class CategoriesSteps {
                 .as("Categories list should be displayed")
                 .isTrue();
     }
+
+
 }

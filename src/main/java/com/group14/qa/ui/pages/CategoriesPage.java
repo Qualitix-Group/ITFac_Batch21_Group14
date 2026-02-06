@@ -663,4 +663,14 @@ public class CategoriesPage extends PageObject {
         }
         System.out.println("=============================");
     }
+
+    public String getSuccessMessageText() {
+        try {
+            return successMessage.getText();
+        } catch (Exception e) {
+            return "";
+        }
+    }
+
+
 }
