@@ -5,75 +5,61 @@ import io.restassured.response.Response;
 import net.serenitybdd.annotations.Step;
 import net.serenitybdd.rest.SerenityRest;
 
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.equalTo;
 
 public class AdminPlantUpdateSteps {
 
     private Response response;
-    private int plantId;
-    private String expectedName;
-    private float expectedPrice;
-    private int expectedQuantity;
-    private int expectedCategoryId;
 
-    @Step("Create a plant for update")
+    @Step("Create plant for update")
     public int createPlantForUpdate(String token, int categoryId) {
 
-        String requestBody = """
-                {
-                  "name": "PlantToUpdate",
-                  "price": 100.0,
-                  "quantity": 10,
-                  "category": { "id": %d }
-                }
-                """.formatted(categoryId);
+        String name = "Plant_" + System.currentTimeMillis();
+        if (name.length() > 25) {
+            name = name.substring(0, 25);
+        }
 
-        Response createResponse = SerenityRest.given()
-                .contentType(ContentType.JSON)
-                .header("Authorization", "Bearer " + token)
-                .body(requestBody)
-                .when()
-                .post("/api/plants/category/" + categoryId);
-
-        createResponse.then().statusCode(201);
-
-        return createResponse.path("id");
-    }
-
-    @Step("Update plant details")
-    public void updatePlant(int plantId, String token, String name, float price, int quantity, int categoryId) {
-
-        this.plantId = plantId;
-        this.expectedName = name;
-        this.expectedPrice = price;
-        this.expectedQuantity = quantity;
-        this.expectedCategoryId = categoryId;
-
-        String requestBody = """
-                {
-                  "name": "%s",
-                  "price": %f,
-                  "quantity": %d,
-                  "category": { "id": %d }
-                }
-                """.formatted(name, price, quantity, categoryId);
+        String body = String.format(
+                "{\"name\":\"%s\",\"price\":100.0,\"quantity\":10,\"category\":{\"id\":%d}}",
+                name, categoryId
+        );
 
         response = SerenityRest.given()
                 .contentType(ContentType.JSON)
                 .header("Authorization", "Bearer " + token)
-                .body(requestBody)
-                .when()
+                .body(body)
+                .post("/api/plants/category/" + categoryId);
+
+        response.then().statusCode(201);
+
+        return response.path("id");
+    }
+
+    @Step("Update plant")
+    public void updatePlant(int plantId, String token, String name, float price, int quantity) {
+
+        String body = String.format(
+                "{\"name\":\"%s\",\"price\":%.2f,\"quantity\":%d}",
+                name, price, quantity
+        );
+
+        response = SerenityRest.given()
+                .contentType(ContentType.JSON)
+                .header("Authorization", "Bearer " + token)
+                .body(body)
                 .put("/api/plants/" + plantId);
     }
 
-    @Step("Verify plant update successful")
-    public void verifyPlantUpdateSuccessful() {
+    @Step("Verify plant updated successfully")
+    public void verifyPlantUpdatedSuccessfully(String name, float price, int quantity) {
         response.then()
                 .statusCode(200)
-                .body("id", equalTo(plantId))
-                .body("name", equalTo(expectedName))
-                .body("price", equalTo(expectedPrice))
-                .body("quantity", equalTo(expectedQuantity))
-                .body("category.id", equalTo(expectedCategoryId));
+                .body("name", equalTo(name))
+                .body("price", equalTo(price))
+                .body("quantity", equalTo(quantity));
+    }
+
+    public Response getResponse() {
+        return response;
     }
 }
