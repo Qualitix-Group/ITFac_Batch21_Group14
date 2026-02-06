@@ -18,8 +18,8 @@ public class AdminEditPlantSteps {
     @Steps
     PlantsPage plantsPage;
 
-    private String originalPlantName = "GuavaMor12Plant";   // from your table HTML
-    private String updatedPlantName = "GuavaMor123Plant";
+    private String originalPlantName = "Papaya12Plant";   // from your table HTML
+    private String updatedPlantName = "Guava133Plant";
 
     @Given("I am logged in as admin and on plant list page")
     public void i_am_logged_in_as_admin_and_on_plant_list_page() {
