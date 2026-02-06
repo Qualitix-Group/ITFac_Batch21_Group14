@@ -1,5 +1,5 @@
 # File: src/test/resources/features/ui/categories/admin_category_001.feature
-Feature: Admin Category Management - TC_UI_ADMIN_CAT_001
+Feature: Admin Category Management - TC_UI_ADMIN_CAT_001 & TC_UI_USER_CAT_001
 
   @Admin @Category @Smoke
   Scenario: Verify Add Category Button Visible for Admin

@@ -7,8 +7,8 @@ import org.junit.runner.RunWith;
 @RunWith(CucumberWithSerenity.class)
 @CucumberOptions(
         features = {
-                "src/test/resources/features/ui/categories/admin_category_001.feature",
-                //"src/test/resources/features/ui/categories/admin_category_002.feature"
+                "src/test/resources/features/ui/categories/category_add_button_visibility.feature",
+                //"src/test/resources/features/ui/categories/category_edit_botton_visibility.feature"
         },
         glue = {"com.group14.qa.ui.steps"},
         tags = "@Smoke or @Admin or @User or @Regression or @Integration",

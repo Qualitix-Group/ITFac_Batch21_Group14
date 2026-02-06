@@ -515,8 +515,29 @@ public class CategoriesPage extends PageObject {
     public String getFirstCategoryName() {
         try {
             if (!categoryRows.isEmpty() && categoryRows.get(0).isVisible()) {
-                // Assuming first column contains category name
-                return categoryRows.get(0).findElement(By.cssSelector("td:first-child")).getText();
+                // Try different columns to find the name
+                String rowText = categoryRows.get(0).getText();
+                System.out.println("DEBUG: First row text: " + rowText);
+
+                // Try to extract name from different columns
+                for (int i = 1; i <= 5; i++) { // Check first 5 columns
+                    try {
+                        String cellText = categoryRows.get(0)
+                                .findElement(By.cssSelector("td:nth-child(" + i + ")"))
+                                .getText()
+                                .trim();
+
+                        if (!cellText.isEmpty() && !cellText.matches("\\d+")) {
+                            // Not just a number, likely a name
+                            return cellText;
+                        }
+                    } catch (Exception e) {
+                        // Continue to next column
+                    }
+                }
+
+                // If all else fails, return the first non-empty cell
+                return rowText.split("\\s+")[0];
             }
         } catch (Exception e) {
             System.out.println("Error getting first category name: " + e.getMessage());
@@ -622,5 +643,24 @@ public class CategoriesPage extends PageObject {
     // ---------- Driver Access (for debugging) ----------
     public org.openqa.selenium.WebDriver getDriver() {
         return super.getDriver();
+    }
+
+    public void printAllCategories() {
+        System.out.println("=== DEBUG: All Categories ===");
+        for (int i = 0; i < categoryRows.size(); i++) {
+            try {
+                WebElementFacade row = categoryRows.get(i);
+                System.out.println("Row " + i + ": " + row.getText());
+
+                // Print each cell
+                List<WebElementFacade> cells = row.thenFindAll(By.cssSelector("td"));
+                for (int j = 0; j < cells.size(); j++) {
+                    System.out.println("  Cell " + j + ": '" + cells.get(j).getText() + "'");
+                }
+            } catch (Exception e) {
+                System.out.println("Error reading row " + i + ": " + e.getMessage());
+            }
+        }
+        System.out.println("=============================");
     }
 }
