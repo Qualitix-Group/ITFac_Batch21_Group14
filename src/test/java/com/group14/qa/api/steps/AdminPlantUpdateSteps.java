@@ -5,6 +5,7 @@ import io.restassured.response.Response;
 import net.serenitybdd.annotations.Step;
 import net.serenitybdd.rest.SerenityRest;
 
+import static com.group14.qa.api.utils.PlantApiConstants.*;
 import static org.hamcrest.Matchers.equalTo;
 
 public class AdminPlantUpdateSteps {
@@ -25,17 +26,20 @@ public class AdminPlantUpdateSteps {
         );
 
         response = SerenityRest.given()
+                .baseUri(BASE_URL)
                 .contentType(ContentType.JSON)
                 .header("Authorization", "Bearer " + token)
+                .pathParam("categoryId", categoryId)
                 .body(body)
-                .post("/api/plants/category/" + categoryId);
+                .when()
+                .post(CREATE_PLANT_WITH_CATEGORY);
 
         response.then().statusCode(201);
 
         return response.path("id");
     }
 
-    @Step("Update plant")
+    @Step("Update plant with id {0}")
     public void updatePlant(int plantId, String token, String name, float price, int quantity) {
 
         String body = String.format(
@@ -44,10 +48,13 @@ public class AdminPlantUpdateSteps {
         );
 
         response = SerenityRest.given()
+                .baseUri(BASE_URL)
                 .contentType(ContentType.JSON)
                 .header("Authorization", "Bearer " + token)
+                .pathParam("id", plantId)
                 .body(body)
-                .put("/api/plants/" + plantId);
+                .when()
+                .put(UPDATE_PLANT_BY_ID);
     }
 
     @Step("Verify plant updated successfully")

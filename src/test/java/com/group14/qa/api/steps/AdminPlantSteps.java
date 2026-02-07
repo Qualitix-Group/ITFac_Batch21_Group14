@@ -5,6 +5,7 @@ import io.restassured.response.Response;
 import net.serenitybdd.annotations.Step;
 import net.serenitybdd.rest.SerenityRest;
 
+import static com.group14.qa.api.utils.PlantApiConstants.*;
 import static org.hamcrest.Matchers.*;
 
 public class AdminPlantSteps {
@@ -26,11 +27,13 @@ public class AdminPlantSteps {
                 """.formatted(plantName, subCategoryId);
 
         response = SerenityRest.given()
+                .baseUri(BASE_URL)
                 .contentType(ContentType.JSON)
                 .header("Authorization", "Bearer " + token)
+                .pathParam("categoryId", subCategoryId)
                 .body(requestBody)
                 .when()
-                .post("/api/plants/category/" + subCategoryId);
+                .post(CREATE_PLANT_WITH_CATEGORY);
     }
 
     @Step("Verify plant is created successfully")
@@ -51,5 +54,9 @@ public class AdminPlantSteps {
                 .body("error", equalTo("DUPLICATE_RESOURCE"))
                 .body("message", containsString("already exists"))
                 .body("timestamp", notNullValue());
+    }
+
+    public Response getResponse() {
+        return response;
     }
 }

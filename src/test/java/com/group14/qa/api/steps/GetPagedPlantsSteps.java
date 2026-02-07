@@ -5,23 +5,27 @@ import io.restassured.response.Response;
 import net.serenitybdd.annotations.Step;
 import net.serenitybdd.rest.SerenityRest;
 
+import static com.group14.qa.api.utils.PlantApiConstants.*;
 import static org.hamcrest.Matchers.*;
 
 public class GetPagedPlantsSteps {
 
     private Response response;
 
-    @Step
+    @Step("Get paged plants (page={0}, size={1})")
     public void getPlantsWithPagination(int page, int size, String token) {
+
         response = SerenityRest.given()
+                .baseUri(BASE_URL)
                 .contentType(ContentType.JSON)
                 .header("Authorization", "Bearer " + token)
                 .queryParam("page", page)
                 .queryParam("size", size)
-                .get("/api/plants/paged");
+                .when()
+                .get(GET_PAGED_PLANTS);
     }
 
-    @Step
+    @Step("Verify paged plants response")
     public void verifyPagedPlantsResponse(int pageSize) {
         response.then()
                 .statusCode(200)
