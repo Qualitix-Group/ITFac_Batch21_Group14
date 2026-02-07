@@ -31,7 +31,6 @@ public class LoginPage extends PageObject {
         clickLogin();
     }
 
-    // Individual action methods
     public void enterUsername(String username) {
         usernameField.type(username);
     }
