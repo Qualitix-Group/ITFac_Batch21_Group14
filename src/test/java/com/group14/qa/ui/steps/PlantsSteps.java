@@ -1,6 +1,6 @@
 package com.group14.qa.ui.steps;
 
-import com.group14.qa.ui.pages.PlantsPage;
+import com.group14.qa.ui.pages.AdminPlantsPage;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;
 import io.cucumber.java.en.Then;
@@ -17,7 +17,7 @@ public class PlantsSteps {
     WebDriver driver;
 
     @Steps
-    PlantsPage plantsPage;
+    AdminPlantsPage plantsPage;
 
     private int initialPlantCount;
     private int lowQuantityPlantRow = -1;
@@ -46,11 +46,8 @@ public class PlantsSteps {
                 .isGreaterThanOrEqualTo(1);
     }
 
-    // ========== LOW BADGE STEPS (ADDED BACK) ==========
-
     @Given("at least one plant has quantity less than {int}")
     public void at_least_one_plant_has_quantity_less_than(int maxQuantity) {
-        // Find a plant with low quantity
         lowQuantityPlantRow = plantsPage.findFirstPlantWithLowQuantity();
         assertThat(lowQuantityPlantRow)
                 .as("Should find at least one plant with quantity less than " + maxQuantity)
@@ -86,11 +83,8 @@ public class PlantsSteps {
                 .isTrue();
     }
 
-    // ========== ACTIVE SALE ERROR STEPS ==========
-
     @Given("a plant is referenced in an active sale")
     public void a_plant_is_referenced_in_an_active_sale() {
-        // Go to sales page
         plantsPage.navigateToSalesPage();
         plantsPage.waitFor(2000);
 
@@ -98,7 +92,6 @@ public class PlantsSteps {
                 .as("Should be on sales page")
                 .isTrue();
 
-        // Get first plant name from sales
         plantInActiveSale = plantsPage.getFirstPlantNameInSales();
         assertThat(plantInActiveSale)
                 .as("Should find a plant in active sales")
@@ -106,7 +99,6 @@ public class PlantsSteps {
 
         System.out.println("Found plant in active sale: " + plantInActiveSale);
 
-        // Go back to plants page
         plantsPage.navigateToPlantsPage();
         plantsPage.waitFor(2000);
 
@@ -125,7 +117,6 @@ public class PlantsSteps {
         plantsPage.searchForPlant(plantInActiveSale);
         plantsPage.waitFor(2000);
 
-        // Verify plant is found
         boolean plantFound = plantsPage.isPlantInPlantsTable(plantInActiveSale);
         System.out.println("Plant found in table: " + plantFound);
 
@@ -165,7 +156,6 @@ public class PlantsSteps {
 
         System.out.println("Attempting to delete plant: " + plantInActiveSale);
 
-        // Get plant ID for debugging
         plantInActiveSaleId = plantsPage.getPlantIdByName(plantInActiveSale);
         System.out.println("Plant ID: " + plantInActiveSaleId);
 
@@ -174,10 +164,8 @@ public class PlantsSteps {
 
     @When("I confirm deletion in the confirmation dialog")
     public void i_confirm_deletion_in_the_confirmation_dialog() {
-        // Give more time for alert to appear
         plantsPage.waitFor(2000);
 
-        // Verify alert is present
         boolean alertPresent = plantsPage.isAlertPresent();
         System.out.println("Alert present before confirmation: " + alertPresent);
 
@@ -230,17 +218,14 @@ public class PlantsSteps {
 
     @Then("an error message should be displayed")
     public void an_error_message_should_be_displayed() {
-        plantsPage.waitFor(3000); // Wait for error to appear
+        plantsPage.waitFor(3000);
 
-        // Check for different types of errors
         boolean whitelabelError = plantsPage.isWhitelabelErrorPageDisplayed();
 
 
         System.out.println("=== ERROR VERIFICATION ===");
         System.out.println("Whitelabel error page: " + whitelabelError);
 
-
-        // Accept ANY error indication - the test should pass if ANY error is shown
         boolean anyErrorIndication = whitelabelError ;
 
         System.out.println("Any error indication found: " + anyErrorIndication);
@@ -256,11 +241,9 @@ public class PlantsSteps {
     public void the_plant_should_remain_in_the_list() {
         plantsPage.waitFor(2000);
 
-        // Refresh page to ensure we have latest state
         plantsPage.navigateToPlantsPage();
         plantsPage.waitFor(2000);
 
-        // Search for the plant again
         plantsPage.searchForPlant(plantInActiveSale);
         plantsPage.waitFor(1000);
 
@@ -278,7 +261,6 @@ public class PlantsSteps {
         int currentCount = plantsPage.getPlantCount();
         System.out.println("Plant count after failed delete - Initial: " + initialPlantCount + ", Current: " + currentCount);
 
-        // Allow for small differences due to page reload timing
         boolean countSame = Math.abs(currentCount - initialPlantCount) <= 1;
 
         assertThat(countSame)

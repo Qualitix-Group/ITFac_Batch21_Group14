@@ -6,7 +6,7 @@ import net.serenitybdd.core.pages.WebElementFacade;
 import org.openqa.selenium.By;
 import java.util.List;
 
-public class PlantsPage extends PageObject {
+public class AdminPlantsPage extends PageObject {
 
     @FindBy(xpath = "//div[contains(@class, 'alert-success')]//span")
     private WebElementFacade successMessageSpan;
@@ -14,7 +14,6 @@ public class PlantsPage extends PageObject {
     @FindBy(xpath = "//div[contains(@class, 'alert-success')]")
     private WebElementFacade successMessageDiv;
 
-    // Error message elements
     @FindBy(xpath = "//div[contains(@class, 'alert-danger')]")
     private WebElementFacade errorMessageDiv;
 
@@ -42,7 +41,6 @@ public class PlantsPage extends PageObject {
     @FindBy(xpath = "//*[contains(text(), 'error') or contains(text(), 'Error')]")
     private List<WebElementFacade> anyErrorElements;
 
-    // Sidebar navigation
     @FindBy(xpath = "//a[@href='/ui/sales']")
     private WebElementFacade salesSidebarLink;
 
@@ -52,14 +50,12 @@ public class PlantsPage extends PageObject {
     @FindBy(xpath = "//a[@href='/ui/dashboard']")
     private WebElementFacade dashboardSidebarLink;
 
-    // Search elements
     @FindBy(xpath = "//input[@type='search' or @placeholder='Search' or @name='search']")
     private WebElementFacade searchInput;
 
     @FindBy(xpath = "//button[contains(text(), 'Search') or @type='submit' or contains(@class, 'btn-search')]")
     private WebElementFacade searchButton;
 
-    // Navigation
     public void navigateToPlantsPage() {
         getDriver().get("http://localhost:8080/ui/plants");
         waitForPageToLoad();
@@ -75,7 +71,6 @@ public class PlantsPage extends PageObject {
         waitForPageToLoad();
     }
 
-    // Sidebar navigation methods
     public void clickSalesFromSidebar() {
         try {
             salesSidebarLink.click();
@@ -96,7 +91,6 @@ public class PlantsPage extends PageObject {
         }
     }
 
-    // Verification methods
     public boolean isPlantsPageDisplayed() {
         waitForPageToLoad();
         try {
@@ -142,13 +136,9 @@ public class PlantsPage extends PageObject {
         }
     }
 
-    // ========== LOW BADGE METHODS  ==========
-
-    // Check if any plant has Low badge
     public boolean isLowBadgeDisplayedForAnyPlant() {
         waitForPageToLoad();
         try {
-            // Look for any plant with Low badge
             return find(By.xpath("//table//tr[td]//span[contains(@class, 'badge') and contains(text(), 'Low')]")).isDisplayed();
         } catch (Exception e) {
             System.out.println("No Low badge found for any plant: " + e.getMessage());
@@ -156,11 +146,9 @@ public class PlantsPage extends PageObject {
         }
     }
 
-    // Check Low badge for specific plant row
     public boolean isLowBadgeDisplayedForRow(int rowNumber) {
         waitForPageToLoad();
         try {
-            // Check if the specific row has a Low badge
             return find(By.xpath("(//table/tbody/tr[td])[" + rowNumber + "]//span[contains(@class, 'badge') and contains(text(), 'Low')]")).isDisplayed();
         } catch (Exception e) {
             System.out.println("No Low badge found for row " + rowNumber + ": " + e.getMessage());
@@ -168,19 +156,14 @@ public class PlantsPage extends PageObject {
         }
     }
 
-    // Get quantity value for a specific plant row
     public String getQuantityForRow(int rowNumber) {
         waitForPageToLoad();
         try {
-            // Try different possible locations for quantity
-            // Option 1: In a specific column (adjust index based on your table structure)
             return find(By.xpath("(//table/tbody/tr[td])[" + rowNumber + "]/td[4]")).getText();
         } catch (Exception e) {
             try {
-                // Option 2: Look for quantity anywhere in the row
                 String rowText = find(By.xpath("(//table/tbody/tr[td])[" + rowNumber + "]")).getText();
-                // Extract numeric quantity (simplified - you might need to adjust based on your data)
-                return rowText.replaceAll("[^0-9]", "").substring(0, 1); // Get first digit
+                return rowText.replaceAll("[^0-9]", "").substring(0, 1);
             } catch (Exception ex) {
                 System.out.println("Could not get quantity for row " + rowNumber + ": " + ex.getMessage());
                 return "0";
@@ -188,7 +171,6 @@ public class PlantsPage extends PageObject {
         }
     }
 
-    // Find first plant with low quantity (less than 5)
     public int findFirstPlantWithLowQuantity() {
         waitForPageToLoad();
         try {
@@ -199,18 +181,16 @@ public class PlantsPage extends PageObject {
                     String quantityText = plantRows.get(i).find(By.xpath(".//td[contains(text(), 'Low')]/preceding-sibling::td[1]")).getText();
                     int quantity = Integer.parseInt(quantityText.trim());
                     if (quantity < 5) {
-                        return i + 1; // Return 1-based row index
+                        return i + 1;
                     }
                 } catch (Exception e) {
-                    // Try alternative way to find quantity
                     String rowText = plantRows.get(i).getText();
-                    // Extract first number from row text
                     String[] parts = rowText.split("\\s+");
                     for (String part : parts) {
                         try {
                             int quantity = Integer.parseInt(part);
                             if (quantity < 5) {
-                                return i + 1; // Return 1-based row index
+                                return i + 1;
                             }
                         } catch (NumberFormatException nfe) {
                             continue;
@@ -226,7 +206,6 @@ public class PlantsPage extends PageObject {
         }
     }
 
-    // Verify Low badge is displayed when quantity is low
     public boolean verifyLowBadgeForLowQuantityPlants() {
         waitForPageToLoad();
         try {
@@ -261,22 +240,15 @@ public class PlantsPage extends PageObject {
         }
     }
 
-    // ========== ERROR DETECTION METHODS ==========
-
     public boolean isWhitelabelErrorPageDisplayed() {
         try {
-            // Check for whitelabel error in multiple ways
             boolean whitelabelVisible = false;
-
-            // Check h1 element
             try {
                 whitelabelVisible = whitelabelErrorPage.isDisplayed();
             } catch (Exception e) {
-                // Check body text
                 try {
                     whitelabelVisible = bodyWhitelabelError.isDisplayed();
                 } catch (Exception ex) {
-                    // Check page source
                     try {
                         String pageSource = getDriver().getPageSource();
                         whitelabelVisible = pageSource.contains("Whitelabel Error Page");
@@ -292,7 +264,6 @@ public class PlantsPage extends PageObject {
         }
     }
 
-    // Sales page methods
     public List<String> getAllPlantNamesInSales() {
         waitForPageToLoad();
         List<String> plantNames = new java.util.ArrayList<>();
@@ -310,11 +281,9 @@ public class PlantsPage extends PageObject {
     public boolean isPlantInSales(String plantName) {
         waitForPageToLoad();
         try {
-            // Try exact match first
             try {
                 return find(By.xpath("//table/tbody/tr/td[1][text()='" + plantName + "']")).isDisplayed();
             } catch (Exception e) {
-                // Try contains
                 return find(By.xpath("//table/tbody/tr/td[1][contains(text(), '" + plantName + "')]")).isDisplayed();
             }
         } catch (Exception e) {
@@ -336,13 +305,11 @@ public class PlantsPage extends PageObject {
     public void searchForPlant(String plantName) {
         waitForPageToLoad();
         try {
-            // Try to find and use search input
             try {
                 searchInput.type(plantName);
                 waitFor(500);
                 searchButton.click();
             } catch (Exception e) {
-                // Fallback: look for any search form
                 try {
                     WebElementFacade input = find(By.xpath("//input[@type='text' or @type='search']"));
                     input.type(plantName);
@@ -362,14 +329,12 @@ public class PlantsPage extends PageObject {
     public boolean isPlantInPlantsTable(String plantName) {
         waitForPageToLoad();
         try {
-            // Look for plant name in any column
             return find(By.xpath("//table/tbody/tr[td[contains(text(), '" + plantName + "')]]")).isDisplayed();
         } catch (Exception e) {
             return false;
         }
     }
 
-    // Get plant ID from plants table by name
     public String getPlantIdByName(String plantName) {
         waitForPageToLoad();
         try {
@@ -429,7 +394,6 @@ public class PlantsPage extends PageObject {
         }
     }
 
-    // Delete button for specific plant by name
     public void clickDeleteButtonForPlantByName(String plantName) {
         waitForPageToLoad();
         try {
@@ -444,7 +408,6 @@ public class PlantsPage extends PageObject {
         }
     }
 
-    // Delete functionality methods
     public void clickDeleteButtonForFirstPlant() {
         waitForPageToLoad();
         try {
@@ -510,7 +473,7 @@ public class PlantsPage extends PageObject {
                             found = true;
                         }
                     } catch (Exception ex2) {
-                        // Ignore
+
                     }
                 }
             }
@@ -563,7 +526,6 @@ public class PlantsPage extends PageObject {
         waitFor(500);
     }
 
-    // Debug method to help identify issues
     public void printDebugInfo() {
         System.out.println("=== DEBUG INFO ===");
         System.out.println("Current URL: " + getDriver().getCurrentUrl());
@@ -575,20 +537,15 @@ public class PlantsPage extends PageObject {
         System.out.println("Plant count: " + plantCount);
         System.out.println("Delete buttons count: " + deleteButtonsCount);
 
-        // Check for alerts
         System.out.println("Alert present: " + isAlertPresent());
 
-        // Enhanced error checking
-//        System.out.println("Error message displayed: " + isErrorMessageDisplayed());
         System.out.println("Whitelabel error page: " + isWhitelabelErrorPageDisplayed());
-//        System.out.println("Unexpected error: " + isUnexpectedErrorDisplayed());
-//        System.out.println("Error message text: " + getErrorMessageText());
 
-        // Low badge info
+
         System.out.println("Any Low badge displayed: " + isLowBadgeDisplayedForAnyPlant());
         System.out.println("Low badge verification: " + verifyLowBadgeForLowQuantityPlants());
 
-        // Print first 500 chars of page source for debugging
+
         try {
             String pageSource = getDriver().getPageSource();
             System.out.println("Page source (first 500 chars): " + pageSource.substring(0, Math.min(500, pageSource.length())));

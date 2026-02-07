@@ -6,12 +6,12 @@ import org.junit.runner.RunWith;
 
 @RunWith(CucumberWithSerenity.class)
 @CucumberOptions(
-        features = "src/test/resources/features/ui/admin_view_plants.feature",
+        features = "src/test/resources/features/ui/user_view_plants.feature",
         glue = {"com.group14.qa.ui.steps"},
         tags = "@Smoke",
         plugin = {"pretty", "html:target/cucumber-reports.html"},
         monochrome = true
 )
 
-public class AdminPlantViewTestRunner {
+public class UserPlantViewTestRunner {
 }
