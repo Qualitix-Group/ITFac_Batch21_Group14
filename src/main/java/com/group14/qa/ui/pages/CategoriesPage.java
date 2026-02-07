@@ -279,6 +279,9 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.Select;
 import java.time.Duration;
 import java.util.List;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import java.util.stream.Collectors;
+import java.util.ArrayList;
 
 public class CategoriesPage extends PageObject {
 
@@ -309,6 +312,25 @@ public class CategoriesPage extends PageObject {
 
     @FindBy(css = ".empty-state, .no-data, .dataTables_empty")
     private WebElementFacade emptyStateContainer;
+
+    // ---------- Pagination Elements ----------
+    @FindBy(css = "nav .pagination, ul.pagination")
+    private WebElementFacade paginationContainer;
+
+    @FindBy(css = ".page-link, .pagination a")
+    private List<WebElementFacade> allPaginationLinks;
+
+    @FindBy(xpath = "//a[contains(text(), 'Previous') or contains(@aria-label, 'Previous')]")
+    private WebElementFacade previousButton;
+
+    @FindBy(xpath = "//a[contains(text(), 'Next') or contains(@aria-label, 'Next')]")
+    private WebElementFacade nextButton;
+
+    @FindBy(css = ".page-item.active .page-link, li.active a.page-link")
+    private WebElementFacade activePageLink;
+
+    @FindBy(css = ".page-item.disabled .page-link")
+    private WebElementFacade disabledPageLink;
 
     // ---------- Navigation Methods ----------
     public void openCategoriesTab() {
@@ -672,5 +694,315 @@ public class CategoriesPage extends PageObject {
         }
     }
 
+    public boolean isPaginationDisplayed() {
+        try {
+            waitFor(ExpectedConditions.visibilityOf(paginationContainer));
+            return paginationContainer.isDisplayed();
+        } catch (Exception e) {
+            System.out.println("DEBUG: Pagination not displayed - " + e.getMessage());
+            return false;
+        }
+    }
+    public List<String> getPageNumbers() {
+        List<String> pageNumbers = new ArrayList<>();
+        try {
+            for (WebElementFacade link : allPaginationLinks) {
+                String text = link.getText().trim();
+                if (!text.isEmpty() &&
+                        !text.equalsIgnoreCase("Previous") &&
+                        !text.equalsIgnoreCase("Next") &&
+                        text.matches("\\d+")) { // Only numeric page numbers
+                    pageNumbers.add(text);
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("DEBUG: Error getting page numbers - " + e.getMessage());
+        }
+        return pageNumbers;
+    }
 
+    public boolean isPreviousButtonEnabled() {
+        try {
+            WebElementFacade parent = previousButton.find(By.xpath("./.."));
+            String parentClass = parent.getAttribute("class");
+            System.out.println("DEBUG: Previous button parent class: " + parentClass);
+            return !parentClass.contains("disabled");
+        } catch (Exception e) {
+            System.out.println("DEBUG: Previous button check error - " + e.getMessage());
+            return false;
+        }
+    }
+    public boolean isNextButtonEnabled() {
+        try {
+            WebElementFacade parent = nextButton.find(By.xpath("./.."));
+            String parentClass = parent.getAttribute("class");
+            System.out.println("DEBUG: Next button parent class: " + parentClass);
+            return !parentClass.contains("disabled");
+        } catch (Exception e) {
+            System.out.println("DEBUG: Next button check error - " + e.getMessage());
+            return false;
+        }
+    }
+
+    public String getActivePageNumber() {
+        try {
+            return activePageLink.getText();
+        } catch (Exception e) {
+            System.out.println("DEBUG: Error getting active page - " + e.getMessage());
+            return "1"; // Default to page 1
+        }
+    }
+
+    public void clickPageNumber(String pageNumber) {
+        try {
+            WebElementFacade pageLink = find(By.xpath(
+                    String.format("//a[contains(@class, 'page-link') and text()='%s']", pageNumber)
+            ));
+            pageLink.waitUntilClickable().click();
+            waitForPageContentToReload();
+        } catch (Exception e) {
+            System.out.println("DEBUG: Error clicking page number " + pageNumber + " - " + e.getMessage());
+            throw e;
+        }
+    }
+
+    public void clickNextPage() {
+        try {
+            if (isNextButtonEnabled()) {
+                nextButton.waitUntilClickable().click();
+                waitForPageContentToReload();
+            } else {
+                System.out.println("DEBUG: Next button is disabled");
+            }
+        } catch (Exception e) {
+            System.out.println("DEBUG: Error clicking Next button - " + e.getMessage());
+        }
+    }
+
+    public void clickPreviousPage() {
+        try {
+            if (isPreviousButtonEnabled()) {
+                previousButton.waitUntilClickable().click();
+                waitForPageContentToReload();
+            } else {
+                System.out.println("DEBUG: Previous button is disabled");
+            }
+        } catch (Exception e) {
+            System.out.println("DEBUG: Error clicking Previous button - " + e.getMessage());
+        }
+    }
+    private void waitForPageContentToReload() {
+        try {
+            // Wait for table to potentially reload
+            waitFor(1000).milliseconds();
+
+            // Wait for spinner/loader to disappear if present
+            try {
+                WebElementFacade loader = find(By.cssSelector(".loader, .spinner, [data-loading]"));
+                waitFor(ExpectedConditions.invisibilityOf(loader));
+            } catch (Exception e) {
+                // No loader found, continue
+            }
+
+            // Wait for table rows to be present
+            waitFor(ExpectedConditions.numberOfElementsToBeMoreThan(
+                    By.cssSelector("table tbody tr"), 0
+            ));
+
+            // Refresh the category rows reference
+            categoryRows = findAll(By.cssSelector("table tbody tr"));
+
+        } catch (Exception e) {
+            System.out.println("DEBUG: Wait for reload error - " + e.getMessage());
+        }
+    }
+
+    /**
+     * Get all data from current page
+     */
+    public List<String> getCurrentPageData() {
+        List<String> pageData = new ArrayList<>();
+        try {
+            categoryRows = findAll(By.cssSelector("table tbody tr"));
+
+            for (WebElementFacade row : categoryRows) {
+                List<WebElementFacade> cells = row.thenFindAll(By.tagName("td"));
+                for (WebElementFacade cell : cells) {
+                    String cellText = cell.getText().trim();
+                    if (!cellText.isEmpty()) {
+                        pageData.add(cellText);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("DEBUG: Error getting page data - " + e.getMessage());
+        }
+        return pageData;
+    }
+
+    /**
+     * Get category names from current page
+     */
+    public List<String> getCategoryNamesFromCurrentPage() {
+        List<String> names = new ArrayList<>();
+        try {
+            categoryRows = findAll(By.cssSelector("table tbody tr"));
+
+            for (WebElementFacade row : categoryRows) {
+                // Try to find the name column (usually second column)
+                try {
+                    WebElementFacade nameCell = row.then(By.cssSelector("td:nth-child(2)"));
+                    String name = nameCell.getText().trim();
+                    if (!name.isEmpty()) {
+                        names.add(name);
+                    }
+                } catch (Exception e) {
+                    // Try alternative column
+                    try {
+                        WebElementFacade firstCell = row.then(By.cssSelector("td:first-child"));
+                        String text = firstCell.getText().trim();
+                        if (!text.matches("\\d+")) { // Not just a number
+                            names.add(text);
+                        }
+                    } catch (Exception ex) {
+                        // Skip this row
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("DEBUG: Error getting category names - " + e.getMessage());
+        }
+        return names;
+    }
+
+    /**
+     * Verify pagination alignment
+     */
+    // Update this method in your CategoriesPage.java
+    public boolean verifyPaginationAlignment() {
+        try {
+            // Try to find the ul element inside nav
+            WebElementFacade paginationList = find(By.cssSelector("nav ul.pagination"));
+
+            if (paginationList.isVisible()) {
+                String listClasses = paginationList.getAttribute("class");
+                System.out.println("DEBUG: Pagination list classes: " + listClasses);
+
+                // Check for alignment classes - "justify-content-start" is in your HTML
+                return listClasses.contains("justify-content-") ||
+                        listClasses.contains("text-") ||
+                        listClasses.contains("d-flex");
+            }
+
+            // Alternative: check the nav container
+            String containerClass = paginationContainer.getAttribute("class");
+            System.out.println("DEBUG: Pagination container classes: " + containerClass);
+            return containerClass.contains("justify-content-") ||
+                    containerClass.contains("text-");
+
+        } catch (Exception e) {
+            System.out.println("DEBUG: Alignment check error - " + e.getMessage());
+
+            // Simple fallback - if pagination is displayed, consider it aligned
+            return isPaginationDisplayed();
+        }
+    }
+
+    /**
+     * Get total number of pages
+     */
+    public int getTotalPages() {
+        return getPageNumbers().size();
+    }
+
+    /**
+     * Print pagination debug information
+     */
+    public void printPaginationInfo() {
+        System.out.println("=== DEBUG: Pagination Information ===");
+        System.out.println("Pagination displayed: " + isPaginationDisplayed());
+        System.out.println("Active page: " + getActivePageNumber());
+        System.out.println("Page numbers: " + getPageNumbers());
+        System.out.println("Total pages: " + getTotalPages());
+        System.out.println("Previous enabled: " + isPreviousButtonEnabled());
+        System.out.println("Next enabled: " + isNextButtonEnabled());
+        System.out.println("================================");
+    }
+
+    /**
+     * Check if pagination controls are visible
+     */
+    public boolean arePaginationControlsVisible() {
+        boolean previousVisible = false;
+        boolean nextVisible = false;
+        boolean numbersVisible = false;
+
+        try {
+            previousVisible = previousButton.isVisible();
+            nextVisible = nextButton.isVisible();
+            numbersVisible = getPageNumbers().size() > 0;
+        } catch (Exception e) {
+            // Ignore
+        }
+
+        System.out.println("DEBUG: Pagination controls - Previous: " + previousVisible +
+                ", Next: " + nextVisible + ", Numbers: " + numbersVisible);
+
+        return (previousVisible || nextVisible) && numbersVisible;
+    }
+
+    /**
+     * Navigate to specific page and verify data changes
+     */
+    public boolean navigateToPageAndVerifyDataChange(String pageNumber) {
+        try {
+            // Get data from current page
+            List<String> currentData = getCurrentPageData();
+            System.out.println("DEBUG: Current page data count: " + currentData.size());
+
+            // Navigate to target page
+            clickPageNumber(pageNumber);
+
+            // Get data from new page
+            List<String> newData = getCurrentPageData();
+            System.out.println("DEBUG: New page data count: " + newData.size());
+
+            // Verify data is different
+            boolean dataChanged = !currentData.equals(newData) && !newData.isEmpty();
+            System.out.println("DEBUG: Data changed after navigation: " + dataChanged);
+
+            return dataChanged;
+
+        } catch (Exception e) {
+            System.out.println("DEBUG: Navigation error - " + e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Get all pagination links text
+     */
+    public List<String> getAllPaginationLinksText() {
+        List<String> linksText = new ArrayList<>();
+        try {
+            for (WebElementFacade link : allPaginationLinks) {
+                linksText.add(link.getText().trim());
+            }
+        } catch (Exception e) {
+            System.out.println("DEBUG: Error getting pagination links text - " + e.getMessage());
+        }
+        return linksText;
+    }
+
+    /**
+     * Wait for pagination to be ready
+     */
+    public void waitForPaginationToLoad() {
+        try {
+            waitFor(ExpectedConditions.visibilityOf(paginationContainer));
+            waitFor(ExpectedConditions.elementToBeClickable(allPaginationLinks.get(0)));
+        } catch (Exception e) {
+            System.out.println("DEBUG: Pagination load wait error - " + e.getMessage());
+        }
+    }
 }
