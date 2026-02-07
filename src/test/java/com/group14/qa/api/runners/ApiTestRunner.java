@@ -1,4 +1,3 @@
-
 package com.group14.qa.ui.runners;
 
 import io.cucumber.junit.CucumberOptions;
@@ -7,12 +6,11 @@ import org.junit.runner.RunWith;
 
 @RunWith(CucumberWithSerenity.class)
 @CucumberOptions(
-        features = "src/test/resources/features/ui",
+        features = "src/test/resources/features/ui/category.feature",
         glue = {"com.group14.qa.ui.steps"},
-        plugin = {"pretty"},
-        tags = "@Positive",
+        tags = "@Smoke",
+        plugin = {"pretty", "html:target/category-cucumber-reports.html"},
         monochrome = true
 )
-public class UiTest {
+public class CategoryUiTestRunner {
 }
-
