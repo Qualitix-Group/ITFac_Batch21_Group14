@@ -3,6 +3,7 @@ package com.group14.qa.ui.steps;
 
 import com.group14.qa.ui.pages.CategoriesPage;
 import com.group14.qa.testdata.TestUsers;
+import com.group14.qa.ui.pages.LoginPage;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;
 import io.cucumber.java.en.Then;
@@ -16,10 +17,14 @@ import java.util.ArrayList;
 
 public class CategoriesPaginationSteps {
 
+    @Steps
     private CategoriesPage categoriesPage;
 
     @Steps
     private LoginSteps loginSteps;
+
+    @Steps
+    private LoginPage loginPage;
 
     private WebDriverWait wait;
     private List<String> firstPageData = new ArrayList<>();

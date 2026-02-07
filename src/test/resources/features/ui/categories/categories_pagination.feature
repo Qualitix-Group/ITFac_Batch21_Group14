@@ -7,8 +7,6 @@ Feature: Categories Page Pagination Functionality
 
   @ui @categories @pagination @TC_UI_USER_CAT_004
   Scenario: TC_UI_USER_CAT_004 Verify pagination displays correctly on Categories page
-    Given I am logged in as a user
-    And I am on the dashboard page
     When I navigate to the Categories page
     Then the Categories page should load successfully
     And the pagination component should be displayed
@@ -18,8 +16,6 @@ Feature: Categories Page Pagination Functionality
 
   @ui @categories @pagination @TC_UI_USER_CAT_003
   Scenario: TC_UI_USER_CAT_003 Verify page navigation using pagination
-    Given I am logged in as a user
-    And I am on the dashboard page
     When I navigate to the Categories page
     Then the Categories page should load successfully
     And I should see page numbers in the pagination

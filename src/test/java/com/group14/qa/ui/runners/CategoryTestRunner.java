@@ -11,7 +11,8 @@ import org.junit.runner.RunWith;
                 //"src/test/resources/features/ui/categories/category_edit_botton_visibility.feature",
                 //"src/test/resources/features/ui/categories/category_add.feature",
                 //"src/test/resources/features/ui/categories/category_edit.feature",
-                "src/test/resources/features/ui/categories/categories_pagination.feature"
+                //"src/test/resources/features/ui/categories/categories_pagination.feature",
+                "src/test/resources/features/ui/categories/empty_state.feature"
 
         },
         glue = {"com.group14.qa.ui.steps"},

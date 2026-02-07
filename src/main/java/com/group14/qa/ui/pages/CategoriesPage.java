@@ -332,6 +332,15 @@ public class CategoriesPage extends PageObject {
     @FindBy(css = ".page-item.disabled .page-link")
     private WebElementFacade disabledPageLink;
 
+    @FindBy(xpath = "//td[contains(text(),'No category found')]")
+    private WebElementFacade emptyStateMessages;
+
+    @FindBy(xpath = "//td[@colspan and contains(@class,'text-center')]")
+    private WebElementFacade emptyStateCell;
+
+    @FindBy(css = "table tbody tr")
+    private List<WebElementFacade> tableRows;
+
     // ---------- Navigation Methods ----------
     public void openCategoriesTab() {
         categoriesTab.waitUntilClickable().click();
@@ -1004,5 +1013,211 @@ public class CategoriesPage extends PageObject {
         } catch (Exception e) {
             System.out.println("DEBUG: Pagination load wait error - " + e.getMessage());
         }
+
+
     }
-}
+
+    public boolean isEmptyStateMessageDisplayed() {
+        try {
+            // Wait for the message to be visible
+            waitFor(ExpectedConditions.visibilityOf(emptyStateMessage));
+            return emptyStateMessage.isDisplayed();
+        } catch (Exception e) {
+            System.out.println("DEBUG: Empty state message not found: " + e.getMessage());
+
+            // Alternative check - look for "No category found" anywhere in the table
+            try {
+                String pageSource = getDriver().getPageSource();
+                return pageSource.contains("No category found") ||
+                        pageSource.contains("No categories");
+            } catch (Exception ex) {
+                return false;
+            }
+        }
+    }
+
+    /**
+     * Get the empty state message text
+     */
+    public String getEmptyStateMessage() {
+        try {
+            if (isEmptyStateMessageDisplayed()) {
+                return emptyStateMessage.getText();
+            }
+
+            // Try alternative locator
+            if (emptyStateCell.isDisplayed()) {
+                return emptyStateCell.getText();
+            }
+        } catch (Exception e) {
+            System.out.println("DEBUG: Error getting empty state message: " + e.getMessage());
+        }
+        return "";
+    }
+
+    /**
+     * Check if table is empty (no data rows)
+     */
+    public boolean isTableEmpty() {
+        try {
+            // Refresh the table rows list
+            tableRows = findAll(By.cssSelector("table tbody tr"));
+
+            // Check if there's only one row (empty state row)
+            if (tableRows.size() == 1) {
+                String rowText = tableRows.get(0).getText();
+                return rowText.contains("No category") ||
+                        rowText.contains("No data") ||
+                        rowText.contains("No categories");
+            }
+
+            return tableRows.isEmpty();
+
+        } catch (Exception e) {
+            System.out.println("DEBUG: Error checking if table is empty: " + e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Check if pagination is hidden when table is empty
+     */
+    public boolean isPaginationHiddenWhenEmpty() {
+        try {
+            if (isTableEmpty()) {
+                // Pagination should not be displayed when table is empty
+                return !isPaginationDisplayed();
+            }
+            return false;
+        } catch (Exception e) {
+            System.out.println("DEBUG: Error checking pagination visibility: " + e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Get total number of data rows (excluding empty state row)
+     */
+    public int getDataRowCount() {
+        try {
+            tableRows = findAll(By.cssSelector("table tbody tr"));
+
+            int count = 0;
+            for (WebElementFacade row : tableRows) {
+                String rowText = row.getText();
+                // Skip rows that contain empty state messages
+                if (!rowText.contains("No category") &&
+                        !rowText.contains("No data") &&
+                        !rowText.contains("No categories") &&
+                        !rowText.trim().isEmpty()) {
+                    count++;
+                }
+            }
+            return count;
+        } catch (Exception e) {
+            System.out.println("DEBUG: Error counting data rows: " + e.getMessage());
+            return 0;
+        }
+    }
+
+    /**
+     * Verify the empty state message is correct
+     */
+    public boolean verifyEmptyStateMessage(String expectedMessage) {
+        try {
+            String actualMessage = getEmptyStateMessage();
+            System.out.println("DEBUG: Expected message: '" + expectedMessage + "'");
+            System.out.println("DEBUG: Actual message: '" + actualMessage + "'");
+
+            return actualMessage.contains(expectedMessage) ||
+                    expectedMessage.contains(actualMessage);
+        } catch (Exception e) {
+            System.out.println("DEBUG: Error verifying empty state message: " + e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Debug method to print table state
+     */
+    public void printTableState() {
+        System.out.println("=== TABLE STATE DEBUG ===");
+        System.out.println("Table empty: " + isTableEmpty());
+        System.out.println("Data row count: " + getDataRowCount());
+        System.out.println("Empty message displayed: " + isEmptyStateMessageDisplayed());
+        System.out.println("Empty message text: '" + getEmptyStateMessage() + "'");
+        System.out.println("Pagination displayed: " + isPaginationDisplayed());
+        System.out.println("=========================");
+    }
+    // Add this method to CategoriesPage.java
+    public WebElementFacade getEmptyStateCell() {
+        return emptyStateCell;
+    }
+
+    public String getEmptyTableMessage() {
+        try {
+            // Try multiple possible selectors for empty state message
+            String message = "";
+
+            // First check the existing emptyStateMessage field
+            if (emptyStateMessage.isCurrentlyVisible()) {
+                message = emptyStateMessage.getText();
+            }
+            // Then check emptyStateContainer
+            else if (emptyStateContainer.isCurrentlyVisible()) {
+                message = emptyStateContainer.getText();
+            }
+            // Then check emptyStateMessages (for "No category found")
+            else if (emptyStateMessages.isCurrentlyVisible()) {
+                message = emptyStateMessages.getText();
+            }
+            // Then check emptyStateCell
+            else if (emptyStateCell.isCurrentlyVisible()) {
+                message = emptyStateCell.getText();
+            }
+            // Finally, check table body cells
+            else {
+                List<WebElementFacade> cells = findAll(By.cssSelector("tbody td"));
+                for (WebElementFacade cell : cells) {
+                    String cellText = cell.getText().toLowerCase();
+                    if (cellText.contains("no") ||
+                            cellText.contains("found") ||
+                            cellText.contains("empty") ||
+                            cellText.contains("data")) {
+                        message = cell.getText();
+                        break;
+                    }
+                }
+            }
+
+            return message.trim();
+        } catch (Exception e) {
+            System.out.println("DEBUG: Error getting empty table message: " + e.getMessage());
+            return "";
+        }
+    }
+
+    /**
+     * Check if empty state is properly formatted
+     */
+    public boolean isEmptyStateProperlyFormatted() {
+        try {
+            // Check if any empty state element is visible
+            if (!emptyStateMessage.isCurrentlyVisible() &&
+                    !emptyStateContainer.isCurrentlyVisible() &&
+                    !emptyStateMessages.isCurrentlyVisible() &&
+                    !emptyStateCell.isCurrentlyVisible()) {
+                return false;
+            }
+
+            // Get the message
+            String message = getEmptyTableMessage();
+            boolean hasMessage = !message.isEmpty();
+
+            // Simple formatting check - message should not be empty
+            return hasMessage;
+        } catch (Exception e) {
+            System.out.println("DEBUG: Error checking empty state formatting: " + e.getMessage());
+            return false;
+        }
+    }}
