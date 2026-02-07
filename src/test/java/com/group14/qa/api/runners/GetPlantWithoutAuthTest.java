@@ -10,33 +10,11 @@ import org.junit.runner.RunWith;
 public class GetPlantWithoutAuthTest {
 
     @Steps
-    GetPlantWithoutAuthSteps getPlantWithoutAuthSteps;
+    GetPlantWithoutAuthSteps steps;
 
     @Test
-    public void TC_API_USER_PLANT_007_verify_unauthorized_access_without_token() {
-
-        System.out.println("=========================================================");
-        System.out.println("TC_API_USER_PLANT_007: Retrieve Plant Without Authentication");
-        System.out.println("=========================================================");
-
-        System.out.println("Description: GET /api/plants/{id} without Bearer token");
-
-        System.out.println("PRECONDITIONS:");
-        System.out.println("1. API server is running");
-        System.out.println("2. User is not authenticated");
-        System.out.println("3. Valid plant ID exists");
-
-        System.out.println("TEST STEPS:");
-        System.out.println("1. Send GET request without Authorization header");
-
-        System.out.println("EXPECTED RESULTS:");
-        System.out.println("1. Status code 401 Unauthorized");
-        System.out.println("2. Authentication error message returned");
-        System.out.println("3. No plant details in response");
-
-        getPlantWithoutAuthSteps.getPlantWithoutToken(1);
-        getPlantWithoutAuthSteps.verifyUnauthorizedResponse();
-
-        System.out.println("TEST PASSED: Unauthorized access correctly blocked");
+    public void should_return_401_when_no_token_provided() {
+        steps.getPlantWithoutToken(1);
+        steps.verifyUnauthorizedResponse();
     }
 }

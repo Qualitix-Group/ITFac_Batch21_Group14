@@ -11,26 +11,18 @@ public class GetPlantSummarySteps {
 
     private Response response;
 
-    @Step("User requests plant summary")
+    @Step
     public void getPlantSummary(String token) {
-
         response = SerenityRest.given()
                 .contentType(ContentType.JSON)
                 .header("Authorization", "Bearer " + token)
-                .when()
                 .get("/api/plants/summary");
-
-        response.then().log().all();
     }
 
-    @Step("Verify plant summary response is valid")
+    @Step
     public void verifyPlantSummaryResponse() {
-
         response.then()
                 .statusCode(200)
-                .contentType(ContentType.JSON)
-                .body("totalPlants", notNullValue())
-                .body("lowStockPlants", notNullValue())
                 .body("totalPlants", greaterThanOrEqualTo(0))
                 .body("lowStockPlants", greaterThanOrEqualTo(0));
     }

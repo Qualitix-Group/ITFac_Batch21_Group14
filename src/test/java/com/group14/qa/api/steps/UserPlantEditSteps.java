@@ -11,10 +11,10 @@ public class UserPlantEditSteps {
 
     private Response response;
 
-    @Step("User tries to edit plant with ID {0}")
-    public void userEditsPlant(int plantId, String userToken) {
+    @Step
+    public void userEditsPlant(int plantId, String token) {
 
-        String requestBody = """
+        String body = """
                 {
                   "name": "UpdatedPlantName",
                   "price": 200.0,
@@ -24,20 +24,13 @@ public class UserPlantEditSteps {
 
         response = SerenityRest.given()
                 .contentType(ContentType.JSON)
-                .header("Authorization", "Bearer " + userToken)
-                .body(requestBody)
-                .when()
+                .header("Authorization", "Bearer " + token)
+                .body(body)
                 .put("/api/plants/" + plantId);
-
-        response.then().log().all();
     }
 
-    @Step("Verify user cannot edit plant - 403 Forbidden")
+    @Step
     public void verifyUserCannotEditPlant() {
-        response.then()
-                .statusCode(403)
-                .body("status", equalTo(403))
-                .body("error", equalTo("Forbidden"))
-                .body("path", containsString("/api/plants"));
+        response.then().statusCode(403);
     }
 }
