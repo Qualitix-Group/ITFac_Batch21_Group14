@@ -10,6 +10,7 @@ public class UserPlantSteps {
 
 
     PlantsAddEditPage plantsPage;
+    String firstPlantNamePage1;
 
     @When("I am on the Plants list page")
     @When("I navigate to the Plant List page")
@@ -66,6 +67,38 @@ public class UserPlantSteps {
         assertThat(plantsPage.getEmptyPlantListMessage())
                 .as("Empty plant list message text mismatch")
                 .isEqualTo("No plants found");
+    }
+
+    @When("I store the first plant name on the current page")
+    public void store_first_plant_name() {
+        firstPlantNamePage1 = plantsPage.getFirstPlantName();
+        assertThat(firstPlantNamePage1).isNotBlank();
+    }
+
+    @When("I click the Next pagination button")
+    public void click_next_pagination() {
+        plantsPage.clickNextPage();
+    }
+
+    @When("I click the Previous pagination button")
+    public void click_previous_pagination() {
+        plantsPage.clickPreviousPage();
+    }
+
+    @Then("I should see different plant entries than the previous page")
+    public void verify_different_page_data() {
+        String firstPlantNamePage2 = plantsPage.getFirstPlantName();
+        assertThat(firstPlantNamePage2)
+                .as("Plant list did not change after clicking Next")
+                .isNotEqualTo(firstPlantNamePage1);
+    }
+
+    @Then("I should see the original plant entries again")
+    public void verify_back_to_original_page() {
+        String firstPlantNameAgain = plantsPage.getFirstPlantName();
+        assertThat(firstPlantNameAgain)
+                .as("Did not return to original page after clicking Previous")
+                .isEqualTo(firstPlantNamePage1);
     }
 
 }

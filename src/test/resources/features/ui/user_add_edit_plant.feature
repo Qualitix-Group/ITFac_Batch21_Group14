@@ -26,3 +26,12 @@ Feature: User - Low stock indicator
   Scenario: TC_UI_USER_PLANT_013 Verify empty plant list message
     When I am on the Plants list page
     Then I should see the empty plant list message
+
+  @Smoke @User @Plants
+  Scenario: TC_UI_USER_PLANT_012 Verify pagination navigation
+    When I am on the Plants list page
+    And I store the first plant name on the current page
+    And I click the Next pagination button
+    Then I should see different plant entries than the previous page
+    When I click the Previous pagination button
+    Then I should see the original plant entries again
