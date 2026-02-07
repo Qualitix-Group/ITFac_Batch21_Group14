@@ -1,8 +1,9 @@
-@Smoke @API @Admin
-Feature: Get Category by ID
 
-  Scenario: Verify Get Category by ID returns correct category details
-    Given a valid admin bearer token is available
-    When I send a GET request to get category by id 3
-    Then the response status code should be 200
-    And the response should contain valid category details
+Feature: Get Category by ID - Null ID (Admin)
+
+  @Smoke @API @Admin
+  Scenario:Category ID is empty
+    Given a valid admin bearer token is available for null category ID
+    When I send a GET request with null category id
+    Then the response status code should be 400 for null category ID
+    And the response should contain validation error message for missing ID

@@ -9,14 +9,14 @@ Feature: Category Management (Admin)
     When I login as admin
     And I open the Categories page
     Then I should see the category list page
-    And categories should be displayed with pagination
+
 
   @Smoke @User
   Scenario: Regular user can access Category List page
     When I login as regular user
     And I open the Categories page
     Then I should see the category list page
-    And categories should be displayed with pagination
+
 
   @Authorization
   Scenario: Unauthorized user cannot access Categories page

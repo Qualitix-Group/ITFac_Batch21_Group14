@@ -1,11 +1,11 @@
-@Smoke @API @User
-Feature: Retrieve All Categories-Verify user can retrieve all categories (User)
+
+Feature: Verify Parent Category Mapping (User)
 
 
 
-
-  Scenario: Verify all categories API response
-    Given a valid JWT token is available for all categories
-    When I send a GET request to retrieve all categories
-    Then the response status code for all categories should be 200
-    And the response should contain a list of categories
+  @Smoke @API @User
+  Scenario: Verify categories return correct parentName
+    Given a valid JWT token is available for parent category mapping
+    When I send a GET request to retrieve categories with parent mapping
+    Then the response status code for parent category mapping should be 200
+    And the parentName field should be correct for each category

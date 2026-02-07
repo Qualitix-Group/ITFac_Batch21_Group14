@@ -7,12 +7,17 @@ public class TestUsers {
         public static final String USERNAME = "admin";
         public static final String PASSWORD = "admin123";
         public static final String ROLE = "ROLE_ADMIN";
+        public static final String TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0dXNlciIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE3NzA0NzAzNDYsImV4cCI6MTc3MDQ3Mzk0Nn0.ZDxAXcJIjD_7mdbwx8fpbOHPFU6fcu40Nn85-QMMOfo";
     }
+
+
 
     public static class RegularUser {
         public static final String USERNAME = "testuser";
         public static final String PASSWORD = "test123";
         public static final String ROLE = "ROLE_USER";
+
+        public static final String TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0dXNlciIsInJvbGVzIjpbIlJPTEVfVVNFUiJdLCJpYXQiOjE3NzA0NzAzNDYsImV4cCI6MTc3MDQ3Mzk0Nn0.ZDxAXcJIjD_7mdbwx8fpbOHPFU6fcu40Nn85-QMMOfo";
     }
 
     public static class InvalidUser {

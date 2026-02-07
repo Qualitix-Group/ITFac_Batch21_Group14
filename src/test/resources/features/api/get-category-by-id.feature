@@ -1,5 +1,5 @@
 @Smoke @API @Admin
-Feature: Get Category by ID
+Feature: Get Category by ID -valid (Admin)
 
   Scenario: Verify Get Category by ID returns correct category details
     Given a valid admin bearer token is available

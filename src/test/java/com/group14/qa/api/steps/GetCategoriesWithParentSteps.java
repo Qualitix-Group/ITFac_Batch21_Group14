@@ -1,48 +1,62 @@
 package com.group14.qa.api.steps;
 
-import com.group14.qa.api.endpoints.DeleteCategoryEndpoints;
+import com.group14.qa.api.endpoints.CategoriesWithParentEndpoints;
 import com.group14.qa.testdata.TestUsers;
 import io.cucumber.java.en.*;
 import net.serenitybdd.rest.SerenityRest;
 
 import static org.hamcrest.Matchers.*;
 
-public class DeleteAlreadyDeletedCategorySteps {
+import java.util.List;
+import java.util.Map;
+
+public class GetCategoriesWithParentSteps {
 
     private String bearerToken;
 
-    @Given("a valid admin bearer token is available for deleting category")
-    public void a_valid_admin_bearer_token_is_available_for_deleting_category() {
-        bearerToken = TestUsers.Admin.TOKEN;
+    @Given("a valid JWT token is available for parent category mapping")
+    public void a_valid_jwt_token_is_available_for_parent_category_mapping() {
+        // Using RegularUser token
+        bearerToken = TestUsers.RegularUser.TOKEN;
 
         if (bearerToken == null || bearerToken.isEmpty()) {
-            throw new RuntimeException("Admin Bearer Token is missing");
+            throw new RuntimeException("JWT token is missing");
         }
     }
 
-    @When("I send a DELETE request for an already deleted category id {int}")
-    public void i_send_a_delete_request_for_an_already_deleted_category_id(int id) {
+    @When("I send a GET request to retrieve categories with parent mapping")
+    public void i_send_a_get_request_to_retrieve_categories_with_parent_mapping() {
         SerenityRest
                 .given()
                 .header("Authorization", "Bearer " + bearerToken)
-                .pathParam("id", id)
                 .log().all()
                 .when()
-                .delete(DeleteCategoryEndpoints.DELETE_CATEGORY_BY_ID)
+                .get(CategoriesWithParentEndpoints.GET_ALL_CATEGORIES)
                 .then()
                 .log().all();
     }
 
-    @Then("the response status code for deleted category should be {int}")
-    public void the_response_status_code_for_deleted_category_should_be(int statusCode) {
+    @Then("the response status code for parent category mapping should be {int}")
+    public void the_response_status_code_for_parent_category_mapping_should_be(int statusCode) {
         SerenityRest.then().statusCode(statusCode);
     }
 
-    @Then("the response should contain category not found error message")
-    public void the_response_should_contain_category_not_found_error_message() {
-        SerenityRest.then()
-                .body("status", equalTo(404))
-                .body("error", equalTo("NOT_FOUND"))
-                .body("message", containsString("Category not found"));
+    @Then("the parentName field should be correct for each category")
+    public void the_parent_name_field_should_be_correct_for_each_category() {
+        // Extract response as a list of maps
+        List<Map<String, Object>> categories = SerenityRest.lastResponse().jsonPath().getList("");
+
+        for (Map<String, Object> category : categories) {
+            String parentName = (String) category.get("parent");
+            Boolean isMainCategory = category.get("parent") == null || parentName.equals("-");
+
+            if (isMainCategory) {
+                // Main category: parentName should be "-"
+                assert parentName.equals("-") : "Main category parentName is incorrect for category: " + category.get("name");
+            } else {
+                // Sub-category: parentName should not be "-"
+                assert parentName != null && !parentName.equals("-") : "Sub-category parentName is incorrect for category: " + category.get("name");
+            }
+        }
     }
 }

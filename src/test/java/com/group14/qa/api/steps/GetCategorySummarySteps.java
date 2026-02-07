@@ -1,60 +1,48 @@
 package com.group14.qa.api.steps;
 
-import com.group14.qa.api.endpoints.CategoryEndpoints;
+import com.group14.qa.api.endpoints.CategorysummaryEndpoints;
 import com.group14.qa.testdata.TestUsers;
 import io.cucumber.java.en.*;
 import net.serenitybdd.rest.SerenityRest;
 
 import static org.hamcrest.Matchers.*;
 
-public class GetCategoryByIdSteps {
+public class GetCategorySummarySteps {
 
     private String bearerToken;
 
-    // Step to provide a valid admin token
-    @Given("a valid admin bearer token is available")
-    public void a_valid_admin_bearer_token_is_available() {
-        // Get token from TestUsers
+    @Given("a valid admin bearer token is available for category summary")
+    public void a_valid_admin_bearer_token_is_available_for_category_summary() {
         bearerToken = TestUsers.Admin.TOKEN;
-
-        // Print token to console for debugging
-
 
         if (bearerToken == null || bearerToken.isEmpty()) {
             throw new RuntimeException("Admin Bearer Token is missing");
         }
     }
 
-    // Step to send GET request to API
-    @When("I send a GET request to get category by id {int}")
-    public void i_send_a_get_request_to_get_category_by_id(int id) {
-
+    @When("I send a GET request to category summary API")
+    public void i_send_a_get_request_to_category_summary_api() {
         SerenityRest
                 .given()
                 .header("Authorization", "Bearer " + bearerToken)
-                .pathParam("id", id)
-                .log().all()          // logs the request for debugging
+                .log().all()
                 .when()
-                .get(CategoryEndpoints.GET_CATEGORY_BY_ID)
+                .get(CategorysummaryEndpoints.GET_CATEGORY_SUMMARY)
                 .then()
-                .log().all();         // logs the response for debugging
+                .log().all();
     }
 
-    // Step to validate status code
-    @Then("the response status code should be {int}")
-    public void the_response_status_code_should_be(int statusCode) {
+    @Then("the response status code for category summary should be {int}")
+    public void the_response_status_code_for_category_summary_should_be(int statusCode) {
         SerenityRest.then().statusCode(statusCode);
     }
 
-    // Step to validate response body
-    @Then("the response should contain valid category details")
-    public void the_response_should_contain_valid_category_details() {
+    @Then("the response should contain category summary details")
+    public void the_response_should_contain_category_summary_details() {
         SerenityRest.then()
-                .body("id", notNullValue())
-                .body("id", instanceOf(Integer.class))
-                .body("name", notNullValue())
-                .body("name", instanceOf(String.class))
-                .body("parent", anything())
-                .body("subCategories", isA(java.util.List.class));
+                .body("mainCategories", notNullValue())
+                .body("mainCategories", instanceOf(Integer.class))
+                .body("subCategories", notNullValue())
+                .body("subCategories", instanceOf(Integer.class));
     }
 }
