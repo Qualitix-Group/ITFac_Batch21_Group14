@@ -19,7 +19,7 @@ public class AdminAddPlantSteps {
     PlantsAddEditPage plantsPage;
 
     // Dynamic names prevent duplicate failures
-    private String plantName = "MahoganiPlant";
+    private String plantName = "Kapuru1Plant";
     private String longPlantName = "VeryLongPlantNameExceedingLimit123";
 
     @Given("I am logged in as admin and on Plants page")
@@ -35,7 +35,7 @@ public class AdminAddPlantSteps {
     public void i_add_a_plant_with_valid_data() {
         plantsPage.clickAddPlant();
         plantsPage.enterPlantName(plantName);
-        plantsPage.selectCategoryByVisibleText("ghd");
+        plantsPage.selectCategoryByVisibleText("Red");
         plantsPage.enterPrice("150.00");
         plantsPage.enterQuantity("20");
         plantsPage.clickSave();
@@ -57,7 +57,7 @@ public class AdminAddPlantSteps {
     public void i_try_to_add_a_plant_without_a_name() {
         plantsPage.clickAddPlant();
         plantsPage.clearPlantName();
-        plantsPage.selectCategoryByVisibleText("ghd");
+        plantsPage.selectCategoryByVisibleText("Red");
         plantsPage.enterPrice("150.00");
         plantsPage.enterQuantity("20");
         plantsPage.clickSave();
@@ -75,7 +75,7 @@ public class AdminAddPlantSteps {
     public void i_try_to_add_a_plant_with_name_longer_than_allowed() {
         plantsPage.clickAddPlant();
         plantsPage.enterPlantName(longPlantName);
-        plantsPage.selectCategoryByVisibleText("ghd");
+        plantsPage.selectCategoryByVisibleText("Red");
         plantsPage.enterPrice("120.00");
         plantsPage.enterQuantity("10");
         plantsPage.clickSave();
@@ -93,7 +93,7 @@ public class AdminAddPlantSteps {
     public void i_try_to_add_a_plant_without_price() {
         plantsPage.clickAddPlant();
         plantsPage.enterPlantName("MoneyPlant");
-        plantsPage.selectCategoryByVisibleText("ghd");
+        plantsPage.selectCategoryByVisibleText("Red");
         plantsPage.clearPrice();   // <-- make sure this method exists in PlantsPage
         plantsPage.enterQuantity("15");
         plantsPage.clickSave();
