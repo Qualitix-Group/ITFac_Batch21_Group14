@@ -13,7 +13,6 @@ public class GetPagedPlantsSteps {
 
     @Step("User retrieves plants with pagination page={0}, size={1}")
     public void getPlantsWithPagination(int page, int size, String token) {
-
         response = SerenityRest.given()
                 .contentType(ContentType.JSON)
                 .header("Authorization", "Bearer " + token)
@@ -27,7 +26,6 @@ public class GetPagedPlantsSteps {
 
     @Step("Verify paged plants response")
     public void verifyPagedPlantsResponse(int pageSize) {
-
         response.then()
                 .statusCode(200)
                 .contentType(ContentType.JSON)
