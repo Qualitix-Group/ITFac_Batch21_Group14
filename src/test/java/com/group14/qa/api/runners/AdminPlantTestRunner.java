@@ -9,7 +9,7 @@ import org.junit.runner.RunWith;
 import static com.group14.qa.api.utils.AuthConfig.TOKEN;
 
 @RunWith(SerenityRunner.class)
-public class AdminPlantTest {
+public class AdminPlantTestRunner {
 
     @Steps
     AdminPlantSteps adminPlantSteps;

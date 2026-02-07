@@ -10,7 +10,7 @@ import org.junit.runner.RunWith;
 import static com.group14.qa.api.utils.AuthConfig.TOKEN;
 
 @RunWith(SerenityRunner.class)
-public class AdminPlantInvalidCategoryTest {
+public class AdminPlantInvalidCategoryTestRunner {
 
     @Steps
     AdminPlantNegativeSteps adminPlantNegativeSteps;

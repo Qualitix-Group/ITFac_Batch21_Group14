@@ -7,7 +7,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(SerenityRunner.class)
-public class GetPlantWithoutAuthTest {
+public class GetPlantWithoutAuthTestRunner {
 
     @Steps
     GetPlantWithoutAuthSteps steps;
