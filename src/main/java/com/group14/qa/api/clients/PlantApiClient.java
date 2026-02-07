@@ -18,4 +18,37 @@ public class PlantApiClient {
                 .extract()
                 .response();
     }
+
+    public Response deletePlantById(Long plantId, String token) {
+        return given()
+                .baseUri(BASE_URL)
+                .header("Authorization", token)
+                .when()
+                .delete("/api/plants/{id}", plantId)
+                .then()
+                .extract()
+                .response();
+    }
+
+    public Response getAllPlants(String token) {
+        return given()
+                .baseUri(BASE_URL)
+                .header("Authorization", token)
+                .when()
+                .get("/api/plants")
+                .then()
+                .extract()
+                .response();
+    }
+
+    public Response getPlantById(Long plantId, String token) {
+        return given()
+                .baseUri(BASE_URL)
+                .header("Authorization", token)
+                .when()
+                .get("/api/plants/{id}", plantId)
+                .then()
+                .extract()
+                .response();
+    }
 }

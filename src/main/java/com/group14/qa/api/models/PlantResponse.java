@@ -1,6 +1,7 @@
 package com.group14.qa.api.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -10,9 +11,13 @@ public class PlantResponse {
     private String name;
     private Double price;
     private Integer quantity;
+
+    @JsonProperty("category")
     private CategoryInfo category;
 
-    // Getters and setters
+    @JsonProperty("categoryId")
+    private Long categoryId;
+
     public Long getId() {
         return id;
     }
@@ -53,7 +58,21 @@ public class PlantResponse {
         this.category = category;
     }
 
-    // Inner class for Category information
+    public Long getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public Long getEffectiveCategoryId() {
+        if (category != null && category.getId() != null) {
+            return category.getId();
+        }
+        return categoryId;
+    }
+
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class CategoryInfo {
         private Long id;
