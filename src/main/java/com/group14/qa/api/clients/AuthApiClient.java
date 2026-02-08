@@ -6,7 +6,7 @@ import static io.restassured.RestAssured.given;
 public class AuthApiClient {
 
     private static final String BASE_URL = "http://localhost:8080";
-    private static final String LOGIN_ENDPOINT = "api/auth/login";
+    private static final String LOGIN_ENDPOINT = "/api/auth/login";
 
     public io.restassured.response.Response login(String username, String password) {
         return given()
