@@ -1,8 +1,8 @@
-package com.group14.qa.ui.pages;
+package pages;
 
-import net.serenitybdd.core.pages.PageObject;
 import net.serenitybdd.annotations.DefaultUrl;
 import net.serenitybdd.core.annotations.findby.FindBy;
+import net.serenitybdd.core.pages.PageObject;
 import net.serenitybdd.core.pages.WebElementFacade;
 
 @DefaultUrl("http://localhost:8080/ui/login")
@@ -31,6 +31,7 @@ public class LoginPage extends PageObject {
         clickLogin();
     }
 
+    // Individual action methods
     public void enterUsername(String username) {
         usernameField.type(username);
     }
