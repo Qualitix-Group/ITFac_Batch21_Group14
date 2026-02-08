@@ -70,7 +70,10 @@ public class PlantResponse {
         if (category != null && category.getId() != null) {
             return category.getId();
         }
-        return categoryId;
+        if (categoryId != null) {
+            return categoryId;
+        }
+        return null;
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)

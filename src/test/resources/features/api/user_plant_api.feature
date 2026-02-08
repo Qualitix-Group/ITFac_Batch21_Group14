@@ -42,3 +42,44 @@ Feature: User Plant API Operations
     When user sends DELETE request to delete plant by ID
     Then the user response status code should be 403
     And the user error response should indicate forbidden access
+
+  @user @plant @negative @security @unauthorized
+  Scenario: Verify user can not retrieve data without authentication
+    Given user has a valid plant ID
+    When user sends GET request to retrieve plant by ID without authentication
+    Then the user response status code should be 401
+    And the error response should indicate authentication is required
+    And no plant details should be returned
+
+  @user @plant @negative @security @add
+  Scenario: Verify User Cannot Add Plant
+    Given user has a valid category ID
+    And user prepares plant data for creation
+    When user sends POST request to create plant
+    Then the user response status code should be 403
+    And the user error response should indicate forbidden access
+
+  @user @plant @negative @security @edit
+  Scenario: Verify User Cannot Edit Plant
+    Given user has a valid plant ID
+    When user sends PUT request to update the plant
+    Then the user response status code should be 403
+    And the user error response should indicate forbidden access
+
+  @user @plant @positive @pagination
+  Scenario: Verify that Retrieve Plants with Pagination and Sorting
+    When user sends GET request to retrieve paginated plants with page 0 and size 5
+    Then the user response status code should be 200
+    And the response should contain paginated plant data
+    And the pagination metadata should be valid
+    And the number of returned records should be less than or equal to page size
+    And the user response content type should be application/json
+
+  @user @plant @positive @summary
+  Scenario: Verify that Get Plant Summary
+    When user sends GET request to retrieve plant summary
+    Then the user response status code should be 200
+    And the response should contain plant summary
+    And the summary values should be non-negative integers
+    And the summary should match database records
+    And the user response content type should be application/json
